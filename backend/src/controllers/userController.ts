@@ -6,8 +6,8 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export const register = async (req: Request, res: Response) => {
-  const { name, last_name, username, password, email, role } = req.body;
+export const create = async (req: Request, res: Response) => {
+  const { name, last_name, password, email, role } = req.body;
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -15,44 +15,47 @@ export const register = async (req: Request, res: Response) => {
     data: {
       name,
       last_name,
-      username,
+      username: name.trim() + '.' + last_name.trim(),
       password: hashedPassword,
       email,
       role,
     },
   });
 
-  res.status(201).json(newUser);
+  res.status(201).json({
+    message: "Usuário criado com sucesso!",
+    user: newUser
+  });
 };
 
 export const login = async (req: Request, res: Response) => {
       
-        const {usuario, senha} = req.body.data;
+        const {username, password} = req.body;
     
-        const user = await prisma.user.findUnique({
+        const newUser = await prisma.user.findUnique({
             where: {
-                username: usuario
+                username
             }
         })
      
-        if(!user){
+        if(!newUser){
             throw new Error("usuario ou senha incorretos")
         }
-        if(user.status_ !== 'ativo'){
+        if(newUser.status_ !== 'enabled'){
             throw new Error("usuario sem permissão de acesso, entre em contato com o administrtador do sistema")
         }
         
-        const verifyPassword = await bcrypt.compare(senha, user.password)
+        const verifyPassword = await bcrypt.compare(password, newUser.password)
     
         if(!verifyPassword){
             throw new Error("usuario ou senha incorretos")
         }
         //@ts-ignore
-        const accessToken = jwt.sign({id: user.id}, process.env.JWT_PASS, {expiresIn: '12h'})
+        const accessToken = jwt.sign({id: newUser.id}, process.env.JWT_PASS, {expiresIn: '12h'})
     
-        const {password: _, ...userLogin} = user
+        const {password: _, ...userLogin} = newUser
      
-        res.json({user: userLogin, accessToken: accessToken});
+        res.json({newUser: userLogin, accessToken: accessToken});
     
 };
 
@@ -115,7 +118,10 @@ export const updateUser = async (req: Request, res: Response) => {
     },
   });
 
-  res.json(user);
+  res.status(200).json({
+    message: "Usuário alterado com sucesso!",
+    user: user
+  });
 };
 
 export const deleteUser = async (req: Request, res: Response) => {
@@ -125,5 +131,8 @@ export const deleteUser = async (req: Request, res: Response) => {
     where: { id: Number(id) },
   });
 
-  res.json(deletedUser);
+  res.status(200).json({
+    message: "Usuário deletado com sucesso!",
+    user: deletedUser
+  });
 };
