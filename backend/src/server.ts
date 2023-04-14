@@ -1,10 +1,13 @@
 import express from 'express';
-import routes from './routes/routes';
+import {userRouter} from './routes/userRoutes';
+import {taskRouter} from './routes/taskRoutes';
+
 
 const app = express();
 
 app.use(express.json());
-app.use('/', routes);
+app.use('/', userRouter);
+app.use('/', taskRouter);
 
 app.get('/', (req, res) => {
   res.send("TODO API is running");
