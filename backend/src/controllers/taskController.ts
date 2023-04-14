@@ -110,3 +110,31 @@ export const toggleTaskCompletion = async (req: Request, res: Response) => {
 
   res.json(updatedTask);
 };
+
+export const filterTasks = async (req: Request, res: Response) => {
+    const { status } = req.query;
+  
+    if (status !== 'completed' && status !== 'pending') {
+      return res.status(400).json({ error: "Invalid status value" });
+    }
+  
+    const completed = status === 'completed';
+  
+    const tasks = await prisma.task.findMany({
+      where: {
+        completed,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            last_name: true,
+            username: true,
+          },
+        },
+      },
+    });
+  
+    res.json(tasks);
+  };
