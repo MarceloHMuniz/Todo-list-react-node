@@ -139,3 +139,21 @@ export const deleteUser = async (req: Request, res: Response) => {
     user: deletedUser
   });
 };
+
+export const validateToken = async (req: Request, res: Response) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).json({ error: 'Token não fornecido' });
+  }
+
+  const token = authHeader.split(' ')[1];
+
+  jwt.verify(token, process.env.JWT_PASS as string, (err: any, decoded: any) => {
+    if (err) {
+      return res.status(401).json({ error: 'Token inválido', isValid: false });
+    }
+
+    res.status(200).json({ message: 'Token válido', isValid: true, user: decoded });
+  });
+}

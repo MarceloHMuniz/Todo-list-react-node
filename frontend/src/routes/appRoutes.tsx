@@ -9,13 +9,13 @@ export const AppRoutes: React.FC = () => {
         <Router>
             <Routes>
                 <Route path="/login" element={<Login />} />
-                <Route path='/home' element={
+                <Route path="/home" element={<Home />} />
+
+                {/* <Route path='/home' element={
                     <PrivateRoute>
                         < Home />
                     </PrivateRoute>
-                } />
-
-                <Route path='*' element={<Navigate to='/login' />} />
+                } /> */}
             </Routes>
         </Router>
     );

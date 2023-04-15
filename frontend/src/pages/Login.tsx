@@ -15,9 +15,11 @@ const Login: React.FC = () => {
     e.preventDefault();
     try {
       await loginUser(username, password, setToken);
+      console.log();
+      
       navigate("/home");
     } catch (err: any) {
-      setError(err.message);
+      setError("Erro ao fazer login. Verifique sua conexão e tente novamente.");
     }
   };
 
