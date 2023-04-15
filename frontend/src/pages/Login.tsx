@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate  } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { TextField, Button, Grid, Typography, Container } from "@mui/material";
 import { loginUser } from "../utils/api";
 import { useAuth } from "../context/authContext";
@@ -9,14 +9,15 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const { setToken } = useAuth();
+  const { setToken, setUser } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await loginUser(username, password, setToken);
-      console.log();
-      
+      const userData = await loginUser(username, password, setToken, setUser);
+      setToken(userData.accessToken);
+      setUser(userData.user);
+
       navigate("/home");
     } catch (err: any) {
       setError("Erro ao fazer login. Verifique sua conexão e tente novamente.");
