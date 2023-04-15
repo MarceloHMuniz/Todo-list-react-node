@@ -1,7 +1,11 @@
+import React from "react";
+import { AuthProvider } from "../src/context/authContext";
+import { AppRoutes } from "./routes/appRoutes";
 
-export const App = () => {
-
+export const App: React.FC = () => {
   return (
-    <h1>ola</h1>
-  )
-}
+    <AuthProvider>
+    <AppRoutes/>
+    </AuthProvider>
+  );
+};
