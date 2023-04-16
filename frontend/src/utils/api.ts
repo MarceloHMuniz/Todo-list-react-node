@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useAuth } from "../context/authContext";
 
 export const loginUser = async (
   username: string,
@@ -14,12 +15,13 @@ export const loginUser = async (
 
   if (response.data) {
     setToken(response.data.accessToken);
-    setUser(response.data.newUser.username);
+    setUser(response.data.newUser.username); 
     return response.data;
   } else {
     throw new Error("Erro ao fazer login");
   }
 };
+
 export const getTasks = async () => {
   const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/task`, {
     headers: {
@@ -34,23 +36,23 @@ export const getTasks = async () => {
   }
 };
 
-export const createTask = async (title: string, userId: number) => {
-  const response = await axios.post(
-    `${import.meta.env.VITE_API_BASE_URL}/tasks`,
-    { title, userId },
-    {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    }
-  );
+// export const createTask = async (title: string, userId: number) => {
+//   const response = await axios.post(
+//     `${import.meta.env.VITE_API_BASE_URL}/tasks`,
+//     { title, userId },
+//     {
+//       headers: {
+//         Authorization: `Bearer ${localStorage.getItem("token")}`,
+//       },
+//     }
+//   );
 
-  if (response.data) {
-    return response.data;
-  } else {
-    throw new Error("Erro ao criar tarefa");
-  }
-};
+//   if (response.data) {
+//     return response.data;
+//   } else {
+//     throw new Error("Erro ao criar tarefa");
+//   }
+// };
 
 export const updateTask = async (id: number, title: string, userId: number) => {
   const response = await axios.put(
@@ -81,5 +83,23 @@ export const deleteTask = async (id: number) => {
     return response.data;
   } else {
     throw new Error("Erro ao excluir tarefa");
+  }
+};
+
+export const registerUser = async (
+  name: string,
+  lastName: string,
+  password: string,
+  email: string
+) => {
+  const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/user`, {
+    name,
+    last_name: lastName,
+    password,
+    email
+  });
+
+  if (response.status !== 201) {
+    throw new Error("Erro ao criar conta.");
   }
 };

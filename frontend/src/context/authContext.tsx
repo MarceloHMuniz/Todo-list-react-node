@@ -3,7 +3,7 @@ import React, { createContext, useState, useContext } from "react";
 interface AuthContextData {
   token: string | null;
   setToken: (token: string | null) => void;
-  user: any; // Você pode usar a interface User aqui, se você tiver definido uma
+  user: any; 
   setUser: (user: any) => void;
 }
 

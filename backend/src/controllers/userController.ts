@@ -7,6 +7,8 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export const create = async (req: Request, res: Response) => {
+  console.log(req.body);
+  
   const { name, last_name, password, email, role } = req.body;
 
   const hashedPassword = await bcrypt.hash(password, 10);

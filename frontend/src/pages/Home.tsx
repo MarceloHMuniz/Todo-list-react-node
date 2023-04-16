@@ -1,49 +1,55 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Header } from "../components/Header";
-import {
-  Container,
-  TextField,
-  Button,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction,
-  IconButton,
-} from "@mui/material";
-import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
+import axios from "axios";
+import { Container, TextField, Button, Grid } from "@mui/material";
+import { Add as AddIcon } from "@mui/icons-material";
+import { TaskItem } from "../components/TaskItem";
 
 interface Todo {
   id: number;
-  text: string;
+  title: string;
+  userId: number;
 }
 
 export const Home: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [inputValue, setInputValue] = useState("");
 
-  const handleAddTodo = () => {
+  useEffect(() => {
+    async function fetchTasks() {
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/task`);
+      setTodos(response.data);
+    }
+
+    fetchTasks();
+  }, []);
+
+  const handleAddTodo = async () => {
+    const userId = 1;
     if (inputValue.trim()) {
-      setTodos((prevTodos) => [
-        ...prevTodos,
-        { id: Date.now(), text: inputValue.trim() },
-      ]);
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/task`, {
+        title: inputValue.trim(),
+        userId,
+      });
+      setTodos((prevTodos) => [...prevTodos, response.data]);
       setInputValue("");
     }
   };
 
-  const handleRemoveTodo = (id: number) => {
+  const handleRemoveTodo = async (id: number) => {
+    await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/task/${id}`);
     setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
   };
 
   return (
-    <div>
+    <div style={{ backgroundColor: "#white", minHeight: "100vh" }}>
       <Header />
-      <Container maxWidth="md">
-        <h1>Todo List</h1>
+      <Container maxWidth="lg">
+        <h1 style={{ color: "#fff" }}>Todo List</h1>
         <TextField
           fullWidth
           label="New Task"
-          variant="outlined"
+          variant="filled"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
         />
@@ -57,22 +63,13 @@ export const Home: React.FC = () => {
         >
           Add Task
         </Button>
-        <List>
-          {todos.map((todo) => (
-            <ListItem key={todo.id}>
-              <ListItemText primary={todo.text} />
-              <ListItemSecondaryAction>
-                <IconButton
-                  edge="end"
-                  aria-label="delete"
-                  onClick={() => handleRemoveTodo(todo.id)}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </ListItemSecondaryAction>
-            </ListItem>
-          ))}
-        </List>
+        <Grid container spacing={2}>
+        {todos.map((todo) => (
+  <Grid item xs={12} sm={6} md={4} key={todo.id}>
+    <TaskItem id={todo.id} text={todo.title} onRemove={handleRemoveTodo} />
+  </Grid>
+))}
+        </Grid>
       </Container>
     </div>
   );
