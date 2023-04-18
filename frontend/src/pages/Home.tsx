@@ -18,15 +18,20 @@ export const Home: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
   const { user } = useAuth();
   
+  
 
   useEffect(() => {
     async function fetchTasks() {
-      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/task`);
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/task`, {
+        params: {
+          username: user,
+        },
+      });
       setTodos(response.data);
     }
-
+  
     fetchTasks();
-  }, []);
+  }, [user]);
 
   const handleAddTodo = async () => {
     

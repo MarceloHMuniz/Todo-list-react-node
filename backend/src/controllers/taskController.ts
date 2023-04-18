@@ -4,7 +4,14 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export const getAllTasks = async (req: Request, res: Response) => {
+  const { username } = req.query;
+
   const tasks = await prisma.task.findMany({
+    where: {
+      user: {
+        username: username as string,
+      },
+    },
     include: {
       user: {
         select: {
