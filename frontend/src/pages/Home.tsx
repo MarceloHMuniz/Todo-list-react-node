@@ -9,6 +9,7 @@ interface Todo {
   id: number;
   title: string;
   userId: number;
+  completed: boolean;
 }
 
 export const Home: React.FC = () => {
@@ -34,6 +35,17 @@ export const Home: React.FC = () => {
       setTodos((prevTodos) => [...prevTodos, response.data]);
       setInputValue("");
     }
+  };
+
+  const handleToggleCompleted = async (id: number, completed: boolean) => {
+    await axios.put(`${import.meta.env.VITE_API_BASE_URL}/task/${id}`, {
+      completed: !completed,
+    });
+    setTodos((prevTodos) =>
+      prevTodos.map((todo) =>
+        todo.id === id ? { ...todo, completed: !completed } : todo
+      )
+    );
   };
 
   const handleRemoveTodo = async (id: number) => {
@@ -65,9 +77,15 @@ export const Home: React.FC = () => {
         </Button>
         <Grid container spacing={2}>
         {todos.map((todo) => (
-  <Grid item xs={12} sm={6} md={4} key={todo.id}>
-    <TaskItem id={todo.id} text={todo.title} onRemove={handleRemoveTodo} />
-  </Grid>
+<Grid item xs={12} sm={6} md={4} key={todo.id}>
+  <TaskItem
+    id={todo.id}
+    text={todo.title}
+    completed={todo.completed}
+    onRemove={handleRemoveTodo}
+    onToggleCompleted={handleToggleCompleted}
+  />
+</Grid>
 ))}
         </Grid>
       </Container>
