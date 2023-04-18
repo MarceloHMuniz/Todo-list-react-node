@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useAuth } from '../context/authContext';
+import { useAuth } from "../context/authContext";
 import { Navigate } from "react-router-dom";
 import axios from "axios";
 
@@ -9,7 +9,7 @@ interface IPrivateRoutes {
 
 export const PrivateRoute: React.FC<IPrivateRoutes> = ({ children }) => {
   const { token } = useAuth();
-  const [isValidToken, setIsValidToken] = useState(false);
+  const [isValidToken, setIsValidToken] = useState<boolean | null>(null);
 
   useEffect(() => {
     const validateToken = async () => {
@@ -19,23 +19,20 @@ export const PrivateRoute: React.FC<IPrivateRoutes> = ({ children }) => {
             Authorization: `Bearer ${token}`,
           },
         });
-
-        
-        
         setIsValidToken(response.data.isValid);
       } catch (err) {
         setIsValidToken(false);
-      } 
+      }
     };
 
-    if (token) {
+    if (token && isValidToken === null) {
       validateToken();
-    } 
-  }, [token]);
+    }
+  }, [token, isValidToken]);
 
-
-
-  if (isValidToken) {
+  if (isValidToken === null) {
+    return <div>Loading...</div>;
+  } else if (isValidToken) {
     return children;
   } else {
     return <Navigate to="/login" />;

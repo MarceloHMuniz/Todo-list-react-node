@@ -4,6 +4,7 @@ import axios from "axios";
 import { Container, TextField, Button, Grid } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
 import { TaskItem } from "../components/TaskItem";
+import { useAuth } from "../context/authContext";
 
 interface Todo {
   id: number;
@@ -15,6 +16,8 @@ interface Todo {
 export const Home: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [inputValue, setInputValue] = useState("");
+  const { user } = useAuth();
+  
 
   useEffect(() => {
     async function fetchTasks() {
@@ -26,11 +29,11 @@ export const Home: React.FC = () => {
   }, []);
 
   const handleAddTodo = async () => {
-    const userId = 1;
+    
     if (inputValue.trim()) {
       const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/task`, {
         title: inputValue.trim(),
-        userId,
+        user,
       });
       setTodos((prevTodos) => [...prevTodos, response.data]);
       setInputValue("");

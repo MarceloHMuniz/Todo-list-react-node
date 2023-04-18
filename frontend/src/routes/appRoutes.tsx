@@ -15,13 +15,13 @@ export const AppRoutes: React.FC = () => {
 
                 
 
-                <Route path="/home" element={<Home />} />
+                {/* <Route path="/home" element={<Home />} /> */}
 
-                {/* <Route path='/home' element={
+                <Route path='/home' element={
                     <PrivateRoute>
                         < Home />
                     </PrivateRoute>
-                } /> */}
+                } />
             </Routes>
         </Router>
     );

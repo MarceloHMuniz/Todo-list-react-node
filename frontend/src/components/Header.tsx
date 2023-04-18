@@ -5,10 +5,11 @@ import { useNavigate } from "react-router";
 
 export const Header: React.FC = () => {
   const navigate = useNavigate();
-  const { token, setToken } = useAuth();
+  const { token, setToken, setUser } = useAuth();
 
   const handleLogout = () => {
     setToken(null);
+    setUser(null)
     navigate("/login")
   };
 

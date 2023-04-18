@@ -16,7 +16,7 @@ const Login: React.FC = () => {
     try {
       const userData = await loginUser(username, password, setToken, setUser);
       setToken(userData.accessToken);
-      setUser(userData.newUser.name);
+      setUser(userData.newUser.username);
 
       navigate("/home");
     } catch (err: any) {

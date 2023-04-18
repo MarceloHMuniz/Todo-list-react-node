@@ -36,23 +36,23 @@ export const getTasks = async () => {
   }
 };
 
-// export const createTask = async (title: string, userId: number) => {
-//   const response = await axios.post(
-//     `${import.meta.env.VITE_API_BASE_URL}/tasks`,
-//     { title, userId },
-//     {
-//       headers: {
-//         Authorization: `Bearer ${localStorage.getItem("token")}`,
-//       },
-//     }
-//   );
+export const createTask = async (title: string, userId: number) => {
+  const response = await axios.post(
+    `${import.meta.env.VITE_API_BASE_URL}/tasks`,
+    { title, userId },
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }
+  );
 
-//   if (response.data) {
-//     return response.data;
-//   } else {
-//     throw new Error("Erro ao criar tarefa");
-//   }
-// };
+  if (response.data) {
+    return response.data;
+  } else {
+    throw new Error("Erro ao criar tarefa");
+  }
+};
 
 export const updateTask = async (id: number, title: string, userId: number) => {
   const response = await axios.put(

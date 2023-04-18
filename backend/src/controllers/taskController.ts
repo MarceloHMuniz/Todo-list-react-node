@@ -45,14 +45,14 @@ export const getTaskById = async (req: Request, res: Response) => {
 };
 
 export const createTask = async (req: Request, res: Response) => {
-  const { title, userId } = req.body;
+  const { title, user } = req.body;
 
   const newTask = await prisma.task.create({
     data: {
       title,
       user: {
         connect: {
-          id: userId,
+          username: user,
         },
       },
     },
